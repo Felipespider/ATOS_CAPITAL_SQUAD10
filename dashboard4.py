@@ -1,6 +1,7 @@
+from sqlalchemy import create_engine
 import streamlit as st
 import pandas as pd
-import pyodbc
+# import pyodbc
 import plotly.express as px
 from PIL import Image
 import calendar
@@ -15,17 +16,16 @@ st.sidebar.image(logo, use_container_width=True)
 # Função para conectar ao banco e carregar os dados
 @st.cache_data
 def carregar_dados():
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER=aquidaba.infonet.com.br;"
-        f"DATABASE=dbproinfo;"
-        f"UID=leituraVendas;"
-        f"PWD=KRphDP65BM"
-    )
-    conn = pyodbc.connect(conn_str)
+    server = 'aquidaba.infonet.com.br'
+    database = 'dbproinfo'
+    username = 'leituraVendas'
+    password = 'KRphDP65BM'
+
+    connection_string = f"mssql+pymssql://{username}:{password}@{server}/{database}"
+    engine = create_engine(connection_string)
+    
     query = "SELECT * FROM tbVendasDashboard"
-    df = pd.read_sql(query, conn)
-    conn.close()
+    df = pd.read_sql(query, engine)
     return df
 
 # Carregando dados
