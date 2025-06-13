@@ -16,18 +16,23 @@ st.sidebar.image(logo, use_container_width=True)
 # Conexão com o banco
 @st.cache_data
 def carregar_dados():
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER=aquidaba.infonet.com.br;"
-        f"DATABASE=dbproinfo;"
-        f"UID=leituraVendas;"
-        f"PWD=KRphDP65BM"
-    )
-    conn = pyodbc.connect(conn_str)
-    query = "SELECT * FROM tbVendasDashboard"
-    df = pd.read_sql(query, conn) #aqui é um dataframe em uma variável que ele vai ler qualquer query e conection
-    conn.close()
-    return df
+    try:
+        conn_str = (
+            "DRIVER={ODBC Driver 17 for SQL Server};"
+            "SERVER=aquidaba.infonet.com.br;"
+            "DATABASE=dbproinfo;"
+            "UID=leituraVendas;"
+            "PWD=KRphDP65BM"
+        )
+        conn = pyodbc.connect(conn_str)
+        query = "SELECT * FROM tbVendasDashboard"
+        df = pd.read_sql(query, conn)  # Carrega a query no DataFrame
+        conn.close()
+        return df
+    except Exception as e:
+        st.error(f"Erro ao carregar os dados do banco: {e}")
+        return pd.DataFrame()  # Retorna vazio para evitar erro em outras partes do código
+
 
 # Carregando dados
 # Carregando dados
