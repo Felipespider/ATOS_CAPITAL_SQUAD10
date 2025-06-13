@@ -30,11 +30,22 @@ def carregar_dados():
     return df
 
 # Carregando dados
+# Carregando dados
 df = carregar_dados()
-df.rename(columns={"nmFilial": "FILIAL", "vlVenda": "VLVENDA", "dtVenda": "DTVENDA", "nrCNPJ": "CNPJ"}, inplace=True)
-df["DTVENDA"] = pd.to_datetime(df["DTVENDA"])
-df["ANO"] = df["DTVENDA"].dt.year
-df["MES"] = df["DTVENDA"].dt.month
+
+if df.empty:
+    st.warning("Nenhum dado carregado. Verifique a conexão com o banco ou se a tabela está vazia.")
+else:
+    df.rename(columns={
+        "nmFilial": "FILIAL",
+        "vlVenda": "VLVENDA",
+        "dtVenda": "DTVENDA",
+        "nrCNPJ": "CNPJ"
+    }, inplace=True)
+
+    df["DTVENDA"] = pd.to_datetime(df["DTVENDA"])
+    df["ANO"] = df["DTVENDA"].dt.year
+    df["MES"] = df["DTVENDA"].dt.month
 
 # Lista de filiais
 filiais = sorted(df["FILIAL"].unique())
